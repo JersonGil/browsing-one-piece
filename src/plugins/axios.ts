@@ -1,15 +1,10 @@
-import axios from 'axios'
-import type { App } from 'vue'
+import axios, { type AxiosInstance } from 'axios'
 
-interface AxiosOptions {
-  baseUrl?: string
-  token?: string
-}
+const apiClient: AxiosInstance = axios.create({
+  baseURL: 'https://dragonball-api.com/api/',
+  headers: {
+    'Content-type': 'application/json',
+  },
+})
 
-export default {
-  install: (app: App, options: AxiosOptions) => {
-    app.config.globalProperties.$axios = axios.create({
-      baseURL: options.baseUrl
-    })
-  }
-}
+export default apiClient

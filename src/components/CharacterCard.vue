@@ -1,31 +1,30 @@
 <script setup lang="ts">
-import Card from 'primevue/card'
-import { type Character } from '@/types/character-types'
+import Image from 'primevue/image'
+import { type Characters } from '@/types/character-types'
 import type { PropType } from 'vue'
 
 const props = defineProps({
   character: {
-    type: Object as PropType<Character>,
+    type: Object as PropType<Characters>,
+    required: true,
+  },
+  onGetCharacter: {
+    type: Function as PropType<(character: Characters) => void>,
     required: true,
   },
 })
 </script>
 
 <template>
-  <Card>
-    <template #title>{{ props.character.name }}</template>
-    <template #subtitle>{{ props.character.status }}</template>
-    <template #content>
-      <div class="flex flex-col gap-4">
-        <p class="m-0">Recompensa: {{ props.character.bounty }}</p>
-        <p class="m-0">Rol: {{ props.character.job }}</p>
-      </div>
-    </template>
-    <template #footer>
-      <div class="flex gap-4 mt-1">
-        <Button label="Cancel" severity="secondary" outlined class="w-full" />
-        <Button label="Save" class="w-full" />
-      </div>
-    </template>
-  </Card>
+  <div
+    @click="onGetCharacter(props.character)"
+    class="cursor-pointer border-2 rounded-md border-slate-500 flex flex-row justify-center gap-6 min-h-16 max-h-24 min-w-52"
+  >
+    <h2 class="text-xl text-slate-500 content-center">{{ props.character.name }}</h2>
+    <Image
+      :src="props.character.image"
+      :alt="props.character.name"
+      imageClass="w-14 h-14 object-contain"
+    />
+  </div>
 </template>

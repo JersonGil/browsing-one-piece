@@ -1,10 +1,15 @@
 /* eslint-disable @typescript-eslint/no-require-imports */
 /** @type {import('tailwindcss').Config} */
+const primeui = require('tailwindcss-primeui')
+
 export default {
   purge: ['./index.html', './src/**/*.{vue,js,ts,jsx,tsx}'],
-  content: [],
+  darkMode: false, // or 'media' or 'class'
   theme: {
     extend: {},
   },
-  plugins: [require('tailwindcss-primeui')],
+  variants: {
+    extend: {},
+  },
+  plugins: [primeui],
 }
