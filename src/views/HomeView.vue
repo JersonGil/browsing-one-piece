@@ -30,15 +30,18 @@ const onGetCharacter = (character: Characters) => {
 
 <template>
   <main class="w-full p-4 flex flex-col gap-4 justify-center items-center">
-    <section class="w-full grid grid-cols-[320px_1fr] grid-rows-[1fr] gap-4">
+    <section
+      class="w-full grid gap-4 grid-cols-[1fr] grid-rows-[auto_1fr] lg:grid-cols-[320px_1fr] lg:grid-rows-[1fr]"
+    >
       <article class="flex flex-col justify-center items-center gap-4">
-        <h1 class="text-3xl text-slate-500">Dragon Ball Characters</h1>
-        <ScrollPanel style="width: 100%; height: 500px">
-          <div class="flex flex-col justify-center items-center animate-duration-1000 gap-2">
+        <h1 class="text-3xl text-slate-500 text-center">Dragon Ball Characters</h1>
+        <ScrollPanel class="w-full h-[500px]">
+          <div class="flex flex-col justify-center items-center animate-duration-1000 gap-4 pt-4">
             <CharacterCard
               v-for="character in characters"
               :key="character.id"
               :character="character"
+              :isSelected="characterStore.character?.id === character.id"
               v-animateonscroll="{ enterClass: 'animate-fadein', leaveClass: 'animate-fadeout' }"
               class="transition-opacity duration-300 ease-in-out"
               @get-character="onGetCharacter"
@@ -46,7 +49,7 @@ const onGetCharacter = (character: Characters) => {
           </div>
         </ScrollPanel>
       </article>
-      <article>
+      <article class="mt-4 lg:mt-0">
         <DescriptionView v-if="characterStore.character" :character="characterStore.character" />
       </article>
     </section>
