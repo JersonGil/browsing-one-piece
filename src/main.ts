@@ -7,13 +7,16 @@ import Aura from '@primevue/themes/aura';
 import axios from '@/plugins/axios'
 import { AxiosKey } from '@/types/symbols'
 import AnimateOnScroll from 'primevue/animateonscroll';
+import piniaPluginPersistedstate from 'pinia-plugin-persistedstate'
 
 import App from './App.vue'
 import router from './router'
 
 const app = createApp(App)
+const pinia = createPinia()
+pinia.use(piniaPluginPersistedstate)
 
-app.use(createPinia())
+app.use(pinia)
 app.use(router)
 app.use(PrimeVue, {
   theme: {
