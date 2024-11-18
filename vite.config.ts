@@ -7,7 +7,6 @@ import vueDevTools from 'vite-plugin-vue-devtools'
 
 // https://vite.dev/config/
 export default defineConfig({
-  base: 'https://JersonGil.github.io/browsing-one-piece/',
   plugins: [
     vue(),
     vueJsx(),
