@@ -12,6 +12,7 @@ export default defineConfig({
     vueJsx(),
     vueDevTools(),
   ],
+  base: 'https://JersonGil.github.io/browsing-one-piece/',
   resolve: {
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url))
