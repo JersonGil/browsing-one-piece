@@ -1,5 +1,5 @@
 export interface CharactersResponse {
-  items: Characters[]
+  items: Array<Characters>
   meta: Meta
   links: Links
 }

@@ -9,8 +9,8 @@ const props = defineProps({
     required: true,
   },
   isSelected: {
-    type: Boolean,
     default: false,
+    type: Boolean,
   },
   onGetCharacter: {
     type: Function as PropType<(character: Characters) => void>,
@@ -23,7 +23,7 @@ const props = defineProps({
   <div
     @click="props.onGetCharacter(character)"
     :class="{ 'scale-110': isSelected }"
-    class="cursor-pointer drop-shadow-lg border-2 rounded-md border-slate-500 flex flex-row justify-center gap-6 min-h-16 max-h-24 min-w-52 hover:scale-110"
+    class="cursor-pointer drop-shadow-lg border-2 rounded-md border-slate-500 flex flex-row justify-center gap-6 min-h-16 max-h-24 w-56 hover:scale-110"
   >
     <h2 class="text-xl text-slate-500 content-center">{{ props.character.name }}</h2>
     <Image
