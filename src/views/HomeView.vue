@@ -1,8 +1,7 @@
 <script setup lang="ts">
-import Carousel from 'primevue/carousel'
-import CharacterCard from '@/components/CharacterCard.vue'
+import CharactersCarousel from '@/components/CharactersCarousel.vue'
 import DescriptionView from '@/components/DescriptionView.vue'
-import { areMapsEqual } from '@/utils/libs'
+import { areMapsEqual, animatedDescription } from '@/utils/libs'
 import { ref, onMounted, onErrorCaptured } from 'vue'
 import {
   type CharactersResponse,
@@ -11,6 +10,7 @@ import {
 import { injectStrict } from '@/utils/injectTyped'
 import { AxiosKey } from '@/types/symbols'
 import { useCharacterStore } from '@/stores/character'
+import { MAP_KEY, SECOND_MAP_KEY } from '@/utils/constants'
 
 const http = injectStrict(AxiosKey)
 const characters = ref<Map<string, Characters[]>>(new Map())
@@ -20,28 +20,41 @@ const page = ref(1)
 const limit = ref(10)
 const lengthPage = ref(0)
 const carouselItemsVisible = ref(4)
-const MAP_KEY = 'characters'
-const SECOND_MAP_KEY = 'characters_response'
 
 async function getCharacters() {
-  const resp = await http.get<CharactersResponse>(
-    `characters?page=${page.value}&limit=${limit.value}`,
-  )
+  try {
+    const resp = await http.get<CharactersResponse>(
+      `characters?page=${page.value}&limit=${limit.value}`,
+    )
 
-  if (resp.data.items.length > 0) {
-    lengthPage.value = lengthPage.value + resp.data.items.length
-    responseCharacters.value.set(SECOND_MAP_KEY, resp.data.items)
+    if (resp.data.items.length > 0) {
+      lengthPage.value = lengthPage.value + resp.data.items.length
+      responseCharacters.value.set(SECOND_MAP_KEY, resp.data.items)
+      if (!characterStore.character) {
+        onGetCharacter(resp.data.items[0])
+      }
+    }
+
+    return resp
+  } catch (e) {
+    console.log('error get characters:', e)
   }
-
-  return resp
 }
 
 const onGetCharacter = (character: Characters) => {
   if (characterStore.character?.id === character.id) return
+  animatedDescription(1)
   characterStore.addCharacter(character)
 }
 
 const getPage = async (actuallyPage: number) => {
+  const characterArray = characters.value.get(MAP_KEY)
+
+  if (characterArray !== undefined) {
+    const characterObj = characterArray[actuallyPage]
+    if (characterObj) onGetCharacter(characterObj)
+  }
+
   if (actuallyPage === lengthPage.value - carouselItemsVisible.value) {
     page.value = page.value + 1
     try {
@@ -76,11 +89,13 @@ onMounted(async () => {
     return
   }
 
-  const characterId =
-    characterStore.character?.id === undefined
-      ? resp.data.items[0].id
-      : characterStore.character?.id
-  characterStore.addCharacter(resp.data.items[characterId - 1])
+  if (resp) {
+    const characterId =
+      characterStore.character?.id === undefined
+        ? resp.data.items[0].id
+        : characterStore.character?.id
+    characterStore.addCharacter(resp.data.items[characterId - 1])
+  }
 })
 
 onErrorCaptured((error) => {
@@ -94,30 +109,12 @@ onErrorCaptured((error) => {
     <section
       class="w-full grid gap-4 grid-cols-[1fr] grid-rows-[auto_1fr] lg:grid-cols-[320px_1fr] lg:grid-rows-[1fr]"
     >
-      <article class="flex flex-col justify-center items-center gap-4">
-        <h1 class="text-3xl text-slate-500 text-center">
-          Dragon Ball Characters
-        </h1>
-        <Carousel
-          circular
-          :showIndicators="false"
-          :value="characters.get(MAP_KEY)"
-          orientation="vertical"
-          :numVisible="carouselItemsVisible"
-          :numScroll="1"
-          verticalViewPortHeight="400px"
-          @update:page="getPage"
-        >
-          <template #item="slotProps">
-            <CharacterCard
-              :key="slotProps.data.id"
-              :character="slotProps.data"
-              :isSelected="characterStore.character?.id === slotProps.data.id"
-              :on-get-character="onGetCharacter"
-            />
-          </template>
-        </Carousel>
-      </article>
+      <CharactersCarousel
+        :carouselItemsVisible="carouselItemsVisible"
+        :characters="characters"
+        :on-get-character="onGetCharacter"
+        :get-page="getPage"
+      />
       <article class="mt-4 lg:mt-0">
         <DescriptionView
           v-if="characterStore.character"
@@ -128,24 +125,4 @@ onErrorCaptured((error) => {
   </main>
 </template>
 
-<style lang="css">
-.p-carousel {
-  width: 100%;
-}
-
-.p-carousel-viewport {
-  padding-top: 1em;
-}
-
-.p-carousel-content-container {
-  align-items: center;
-}
-
-.p-carousel-item-list {
-  align-items: center;
-}
-
-.p-carousel-content {
-  width: 100%;
-}
-</style>
+<style lang="css"></style>

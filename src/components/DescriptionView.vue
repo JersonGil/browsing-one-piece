@@ -2,6 +2,8 @@
 import { type Characters } from '@/types/character-types'
 import { Image, Divider, ScrollPanel } from 'primevue'
 import type { PropType } from 'vue'
+import { onMounted } from 'vue'
+import { animatedDescription } from '@/utils/libs'
 
 const props = defineProps({
   character: {
@@ -9,18 +11,27 @@ const props = defineProps({
     required: true,
   },
 })
+
+onMounted(() => {
+  animatedDescription(1.5)
+})
 </script>
 
 <template>
   <div class="w-full p-4 flex flex-col gap-4 justify-center items-start">
-    <div class="w-full flex flex-col items-center lg:flex-row justify-start lg:items-end gap-4">
+    <div
+      class="w-full flex flex-col items-center lg:flex-row justify-start lg:items-end gap-4"
+    >
       <Image
+        class="img-character"
         :src="props.character?.image"
         :alt="props.character?.name"
         imageClass="w-48 h-80 object-contain"
       />
-      <div class="flex flex-col justify-center items-start">
-        <h1 class="text-3xl font-bold text-slate-500">{{ props.character?.name }}</h1>
+      <div class="title flex flex-col justify-center items-start">
+        <h1 class="text-3xl font-bold text-slate-500">
+          {{ props.character?.name }}
+        </h1>
         <div class="grid grid-cols-[1fr_40px_1fr]">
           <div class="flex flex-col justify-center items-start lg:min-w-52">
             <p class="text-md text-slate-500">
@@ -40,9 +51,11 @@ const props = defineProps({
         </div>
       </div>
     </div>
-    <div class="flex flex-col justify-center items-start p-4">
+    <div class="description flex flex-col justify-center items-start p-4">
       <ScrollPanel style="width: 100%; height: 150px">
-        <h2 class="text-lg text-left text-slate-500">{{ props.character.description }}</h2>
+        <h2 class="text-lg text-left text-slate-500">
+          {{ props.character.description }}
+        </h2>
       </ScrollPanel>
     </div>
   </div>
