@@ -1,7 +1,12 @@
 <script setup lang="ts">
-import CharactersCarousel from '@/components/CharactersCarousel.vue'
+import CharactersCarousel from './CharactersCarousel.vue'
 import DescriptionView from '@/components/DescriptionView.vue'
-import { areMapsEqual, animatedDescription } from '@/utils/libs'
+import {
+  areMapsEqual,
+  animatedDescription,
+  MAP_KEY,
+  SECOND_MAP_KEY,
+} from '@/utils/libs'
 import { ref, onMounted, onErrorCaptured } from 'vue'
 import {
   type CharactersResponse,
@@ -10,7 +15,6 @@ import {
 import { injectStrict } from '@/utils/injectTyped'
 import { AxiosKey } from '@/types/symbols'
 import { useCharacterStore } from '@/stores/character'
-import { MAP_KEY, SECOND_MAP_KEY } from '@/utils/constants'
 
 const http = injectStrict(AxiosKey)
 const characters = ref<Map<string, Characters[]>>(new Map())
